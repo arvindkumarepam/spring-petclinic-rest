@@ -280,7 +280,7 @@ abstract class AbstractClinicServiceTests {
     	Visit visit = this.clinicService.findVisitById(1);
         this.clinicService.deleteVisit(visit);
         try {
-        	visit = this.clinicService.findVisitById(1);
+      	visit = this.clinicService.findVisitById(1);
 		} catch (Exception e) {
 			visit = null;
 		}
@@ -292,6 +292,19 @@ abstract class AbstractClinicServiceTests {
     	Vet vet = this.clinicService.findVetById(1);
     	assertThat(vet.getFirstName()).isEqualTo("James");
     	assertThat(vet.getLastName()).isEqualTo("Carter");
+    }
+
+    /**
+     * Test case to verify that a vet's email address can be retrieved from the database.
+     * This test validates that the email field is properly persisted and retrieved.
+     */
+    @Test
+    void shouldFindVetWithEmail(){
+        Vet vet = this.clinicService.findVetById(1);
+        assertThat(vet.getFirstName()).isEqualTo("James");
+        assertThat(vet.getLastName()).isEqualTo("Carter");
+        assertThat(vet.getEmail()).isNotNull();
+        assertThat(vet.getEmail()).isEqualTo("james.carter@ettclinic.com"); // based on data.sql
     }
 
     @Test
@@ -311,6 +324,58 @@ abstract class AbstractClinicServiceTests {
         assertThat(vets.size()).isEqualTo(found + 1);
     }
 
+    /**
+     * Test case to verify that a new vet can be inserted with an email address.
+     * This test ensures that the email field is properly persisted during insertion.
+     */
+    @Test
+    @Transactional
+    void shouldInsertVetWithEmail() {
+        Collection<Vet> vets = this.clinicService.findAllVets();
+        int found = vets.size();
+
+        Vet vet = new Vet();
+        vet.setFirstName("Emily");
+        vet.setLastName("Watson");
+        vet.setEmail("emily.watson@petclinic.com");
+
+        this.clinicService.saveVet(vet);
+        assertThat(vet.getId().longValue()).isNotEqualTo(0);
+
+        // Retrieve and verify email was persisted
+        Vet retrievedVet = this.clinicService.findVetById(vet.getId());
+        assertThat(retrievedVet{getEmail()).isEqualTo("emily.watson@petclinic.com");
+
+        vets = this.clinicService.findAllVets();
+        assertThat(vets.size()).isEqualTo(found + 1);
+    }
+
+    /**
+     * Test case to verify that a new vet can be inserted without an email address.
+     * This test ensures backward compatibility - the email field is optional.
+     */
+    @Test
+    @Transactional
+    void shouldInsertVetWithoutEmail() {
+        Collection<Vet> vets = this.clinicService.findAllVets();
+        int found = vets.size();
+
+        Vet vet = new Vet();
+        vet.setFirstName("Michael");
+        vet.setLastName("Smith");
+        // No email set - should still work
+
+        this.clinicService.saveVet(vet);
+        assertThat(vet.getId().longValue()).isNotEqualTo(0);
+
+        // Retrieve and verify email is null
+        Vet retrievedVet = this.clinicService.findVetById(vet.getId());
+        assertThat(retrievedVet{getEmail()).isNull();
+
+        vets = this.clinicService.findAllVets();
+        assertThat(vets.size()).isEqualTo(found + 1);
+    }
+
     @Test
     @Transactional
     void shouldUpdateVet(){
@@ -321,6 +386,44 @@ abstract class AbstractClinicServiceTests {
         this.clinicService.saveVet(vet);
         vet = this.clinicService.findVetById(1);
         assertThat(vet.getLastName()).isEqualTo(newLastName);
+    }
+
+    /**
+     * Test case to verify that a vet's email address can be updated.
+     * This test ensures that email updates are properly persisted in the database.
+     */
+    @Test
+    @Transactional
+    void shouldUpdateVetEmail(){
+        Vet vet = this.clinicService.findVetById(1);
+        String oldEmail = vet.getEmail();
+        String newEmail = "james.updated@petclinic.com";
+
+        vet.setEmail(newEmail);
+        this.clinicService.saveVet(vet);
+
+        // Retrieve from database and verify email was updated
+        vet = this.clinicService.findVetById(1);
+        assertThat(vet.getEmail()).isEqualTo(newEmail);
+        assertThat(vet.getEmail()).isNotEqualTo(oldEmail);
+    }
+
+    /**
+     * Test case to verify that a vet's email address can be set to null.
+     * This test ensures that email can be removed (optional field).
+     */
+    @Test
+    @Transactional
+    void shouldUpdateVetEmailToNull(){
+        Vet vet = this.clinicService.findVetById(1);
+        assertThat(vet.getEmail()).isNotNull(); // Ensure it has an email initially
+
+        vet.setEmail(null);
+        this.clinicService.saveVet(vet);
+
+        // Retrieve from database and verify email is null
+        vet = this.clinicService.findVetById(1);
+        assertThat(vet.getEmail()).isNull();
     }
 
     @Test
