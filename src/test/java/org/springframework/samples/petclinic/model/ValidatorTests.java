@@ -42,4 +42,133 @@ class ValidatorTests {
         assertThat(violation.getMessage()).isEqualTo("must not be empty");
     }
 
+    /**
+     * Test case for validating a valid email address.
+     * Expected result: No validation errors should occur.
+     */
+    @Test
+    void shouldValidateValidEmail() {
+        LocaleContextHolder.setLocale(Locale.ENGLISH);
+        Person person = new Person();
+        person.setFirstName("John");
+        person.setLastName("Doe");
+        person.setEmail("john.doe@example.com");
+
+        Validator validator = createValidator();
+        Set<ConstraintViolation<Person>> constraintViolations = validator.validate(person);
+
+        assertThat(constraintViolations).isEmpty();
+    }
+
+    /**
+     * Test case for validating an invalid email address (no @ symbol).
+     * Expected result: One validation error should occur for the email field.
+     */
+    @Test
+    void shouldRejectInvalidEmailWithoutAtSymbol() {
+        LocaleContextHolder.setLocale(Locale.ENGLISH);
+        Person person = new Person();
+        person.setFirstName("John");
+        person.setLastName("Doe");
+        person.setEmail("invalid-email");
+
+        Validator validator = createValidator();
+        Set<ConstraintViolation<Person>> constraintViolations = validator.validate(person);
+
+        assertThat(constraintViolations.size()).isEqualTo(1);
+        ConstraintViolation<Person> violation = constraintViolations.iterator().next();
+        assertThat(violation.getPropertyPath().toString()).isEqualTo("email");
+    }
+
+    /**
+     * Test case for validating an invalid email address (missing domain).
+     * Expected result: One validation error should occur for the email field.
+     */
+    @Test
+    void shouldRejectInvalidEmailWithoutDomain() {
+        LocaleContextHolder.setLocale(Locale.ENGLISH);
+        Person person = new Person();
+        person.setFirstName("John");
+        person.setLastName("Doe");
+        person.setEmail("user@");
+
+        Validator validator = createValidator();
+        Set<ConstraintViolation<Person>> constraintViolations = validator.validate(person);
+
+        assertThat(constraintViolations.size()).isEqualTo(1);
+        ConstraintViolation<Person> violation = constraintViolations.iterator().next();
+        assertThat(violation.getPropertyPath().toString()).isEqualTo("email");
+    }
+
+    /**
+     * Test case for validating a null email address.
+     * Expected result: No validation errors (email is optional).
+     */
+    @Test
+    void shouldAllowNullEmail() {
+        LocaleContextHolder.setLocale(Locale.ENGLISH);
+        Person person = new Person();
+        person.setFirstName("John");
+        person.setLastName("Doe");
+        person.setEmail(null);
+
+        Validator validator = createValidator();
+        Set<ConstraintViolation<Person>> constraintViolations = validator.validate(person);
+
+        assertThat(constraintViolations).isEmpty();
+    }
+
+    /**
+     * Test case for validating an empty string email address.
+     * Expected result: No validation errors (empty string is treated as valid by @Email).
+     */
+    @Test
+    void shouldAllowEmptyEmail() {
+        LocaleContextHolder.setLocale(Locale.ENGLISH);
+        Person person = new Person();
+        person.setFirstName("John");
+        person.setLastName("Doe");
+        person.setEmail("");
+
+        Validator validator = createValidator();
+        Set<ConstraintViolation<Person>> constraintViolations = validator.validate(person);
+
+        assertThat(constraintViolations).isEmpty();
+    }
+
+    /**
+     * Test case for validating an email with special characters.
+     * Expected result: No validation errors (special characters are valid in emails).
+     */
+    @Test
+    void shouldValidateEmailWithSpecialCharacters() {
+        LocaleContextHolder.setLocale(Locale.ENGLISH);
+        Person person = new Person();
+        person.setFirstName("John");
+        person.setLastName("Doe");
+        person.setEmail("john.doe+test@example.com");
+
+        Validator validator = createValidator();
+        Set<ConstraintViolation<Person>> constraintViolations = validator.validate(person);
+
+        assertThat(constraintViolations).isEmpty();
+    }
+
+    /**
+     * Test case for validating an email with subdomain.
+     * Expected result: No validation errors.
+     */
+    @Test
+    void shouldValidateEmailWithSubdomain() {
+        LocaleContextHolder.setLocale(Locale.ENGLISH);
+        Person person = new Person();
+        person.setFirstName("John");
+        person.setLastName("Doe");
+        person.setEmail("admin@mail.petclinic.com");
+
+        Validator validator = createValidator();
+        Set<ConstraintViolation<Person>> constraintViolations = validator.validate(person);
+
+        assertThat(constraintViolations).isEmpty();
+    }
 }
