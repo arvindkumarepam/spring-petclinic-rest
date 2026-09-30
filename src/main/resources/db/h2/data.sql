@@ -1,11 +1,11 @@
 -- Insert Vets
-INSERT INTO vets (first_name, last_name) VALUES 
-('James', 'Carter'),
-('Helen', 'Leary'),
-('Linda', 'Douglas'),
-('Rafael', 'Ortega'),
-('Henry', 'Stevens'),
-('Sharon', 'Jenkins');
+INSERT INTO vets (first_name, last_name, email) VALUES 
+('James', 'Carter', 'james.carter@ettclinic.com'),
+('Helen', 'Leary', 'helen.leary@petclinic.com'),
+('Linda', 'Douglas', 'linda.douglas@petclinic.com'),
+('Rafael', 'Ortega', 'rafael.ortega@petclinic.com'),
+('Henry', 'Stevens', 'henry.stevens@petclinic.com'),
+('Sharon', 'Jenkins', 'sharon.jenkins@petclinic.com');
 
 -- Insert Specialties
 INSERT INTO specialties (name) VALUES 
