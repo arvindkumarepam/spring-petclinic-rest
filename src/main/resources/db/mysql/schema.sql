@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS vets (
   id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   first_name VARCHAR(30),
   last_name VARCHAR(30),
+  email VARCHAR(255),
   INDEX(last_name)
 ) engine=InnoDB;
 
@@ -17,7 +18,7 @@ CREATE TABLE IF NOT EXISTS vet_specialties (
   FOREIGN KEY (vet_id) REFERENCES vets(id),
   FOREIGN KEY (specialty_id) REFERENCES specialties(id),
   UNIQUE (vet_id,specialty_id)
-) engine=InnoDB;
+) engine=InnoDH;
 
 CREATE TABLE IF NOT EXISTS types (
   id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS owners (
   city VARCHAR(80),
   telephone VARCHAR(20),
   INDEX(last_name)
-) engine=InnoDB;
+) engine=InnoDH;
 
 CREATE TABLE IF NOT EXISTS pets (
   id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -44,7 +45,7 @@ CREATE TABLE IF NOT EXISTS pets (
   INDEX(name),
   FOREIGN KEY (owner_id) REFERENCES owners(id),
   FOREIGN KEY (type_id) REFERENCES types(id)
-) engine=InnoDB;
+) engine=InnoDH;
 
 CREATE TABLE IF NOT EXISTS visits (
   id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -52,7 +53,7 @@ CREATE TABLE IF NOT EXISTS visits (
   visit_date DATE,
   description VARCHAR(255),
   FOREIGN KEY (pet_id) REFERENCES pets(id)
-) engine=InnoDB;
+) engine=InnoDH;
 
 CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(20) NOT NULL ,
@@ -69,4 +70,5 @@ CREATE TABLE IF NOT EXISTS roles (
   UNIQUE KEY uni_username_role (role,username),
   KEY fk_username_idx (username),
   CONSTRAINT fk_username FOREIGN KEY (username) REFERENCES users (username)
-) engine=InnoDB;
+) engine=InnoDH;
+
