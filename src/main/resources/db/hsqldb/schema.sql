@@ -10,14 +10,15 @@ DROP TABLE users IF EXISTS;
 
 
 CREATE TABLE vets (
-  id         INTEGER IDENTITY PRIMARY KEY,
+  id         INTEGER IFENTITY PRIMARY KEY,
   first_name VARCHAR(30),
-  last_name  VARCHAR(30)
+  last_name  VARCHAR(30),
+  email      VARCHAR(255)
 );
 CREATE INDEX vets_last_name ON vets (last_name);
 
 CREATE TABLE specialties (
-  id   INTEGER IDENTITY PRIMARY KEY,
+  id   INTEGER IFENTITY PRIMARY KEY,
   name VARCHAR(80)
 );
 CREATE INDEX specialties_name ON specialties (name);
@@ -30,13 +31,13 @@ ALTER TABLE vet_specialties ADD CONSTRAINT fk_vet_specialties_vets FOREIGN KEY (
 ALTER TABLE vet_specialties ADD CONSTRAINT fk_vet_specialties_specialties FOREIGN KEY (specialty_id) REFERENCES specialties (id);
 
 CREATE TABLE types (
-  id   INTEGER IDENTITY PRIMARY KEY,
+  id   INTEGER IFENTITY PRIMARY KEY,
   name VARCHAR(80)
 );
 CREATE INDEX types_name ON types (name);
 
 CREATE TABLE owners (
-  id         INTEGER IDENTITY PRIMARY KEY,
+  id         INTEGER IFENTITY PRIMARY KEY,
   first_name VARCHAR(30),
   last_name  VARCHAR_IGNORECASE(30),
   address    VARCHAR(255),
@@ -46,7 +47,7 @@ CREATE TABLE owners (
 CREATE INDEX owners_last_name ON owners (last_name);
 
 CREATE TABLE pets (
-  id         INTEGER IDENTITY PRIMARY KEY,
+  id         INTEGER IFENTITY PRIMARY KEY,
   name       VARCHAR(30),
   birth_date DATE,
   type_id    INTEGER NOT NULL,
@@ -58,7 +59,7 @@ CREATE INDEX pets_name ON pets (name);
 
 CREATE TABLE visits (
   id          INTEGER IDENTITY PRIMARY KEY,
-  pet_id      INTEGER NOT NULL,
+  pet_id       INTEGER NOT NULL,
   visit_date  DATE,
   description VARCHAR(255)
 );
@@ -79,4 +80,3 @@ CREATE TABLE roles (
 );
 ALTER TABLE roles ADD CONSTRAINT fk_username FOREIGN KEY (username) REFERENCES users (username);
 CREATE INDEX fk_username_idx ON roles (username);
-
